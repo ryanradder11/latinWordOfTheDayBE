@@ -7,6 +7,7 @@ const addItem = require('./routes/addItem');
 const updateItem = require('./routes/updateItem');
 const deleteItem = require('./routes/deleteItem');
 
+const port = process.env.PORT || 80;
 
 app.use(express.json());
 app.use(express.static(__dirname + '/static'));
@@ -19,7 +20,7 @@ app.delete('/items/:id', deleteItem);
 
 db.init()
     .then(() => {
-        app.listen(3000, () => console.log('Listening on port 3000'));
+        app.listen(port, () => console.log('Listening on port:' + port));
     })
     .catch((err) => {
         console.error(err);
