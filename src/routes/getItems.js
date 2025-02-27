@@ -11,7 +11,8 @@ module.exports = async (req, res) => {
         origin: 'Latin, meaning dog.',
         example: 'The canis is a loyal companion to humans.',
         synonyms: ['dog', 'hound', 'pooch'],
-        antonyms: ['cat', 'feline']
+        antonyms: ['cat', 'feline'],
+        image: 'dog.jpg'
     };
 
     res.send(wordOfTheDay);
