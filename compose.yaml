@@ -14,8 +14,14 @@ services:
     environment:
       NODE_ENV: production
     ports:
-      - 80:80
+      - 3000:3000
 
+  apache:
+    image: httpd:2.4
+    ports:
+      - 80:80
+    volumes:
+      - ./src/static:/usr/local/apache2/htdocs/
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the
