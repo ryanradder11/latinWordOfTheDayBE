@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const db = require('./persistence');
 const getItems = require('./routes/getItems');
@@ -6,8 +7,10 @@ const addItem = require('./routes/addItem');
 const updateItem = require('./routes/updateItem');
 const deleteItem = require('./routes/deleteItem');
 
+
 app.use(express.json());
 app.use(express.static(__dirname + '/static'));
+app.use(cors());
 
 app.get('/items', getItems);
 app.post('/items', addItem);
