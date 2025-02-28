@@ -17,11 +17,15 @@ let client;
 
 async function init() {
     const host = HOST_FILE ? fs.readFileSync(HOST_FILE) : HOST;
+    console.log('host:', host);
     const user = USER_FILE ? fs.readFileSync(USER_FILE) : USER;
+    console.log('user:', user);
     const password = PASSWORD_FILE
         ? fs.readFileSync(PASSWORD_FILE, 'utf8')
         : PASSWORD;
+    console.log('password:', password);
     const database = DB_FILE ? fs.readFileSync(DB_FILE) : DB;
+    console.log('database:', database);
 
     await waitPort({
         host,
@@ -43,7 +47,22 @@ async function init() {
             console.log(`Connected to postgres db at host ${HOST}`);
             // Run the SQL instruction to create the table if it does not exist
             await client.query(
-                'CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), completed boolean)',
+                `CREATE TABLE IF NOT EXISTS word_of_the_day (
+                    id SERIAL PRIMARY KEY,
+                    word VARCHAR(255) NOT NULL,
+                    definition TEXT NOT NULL,
+                    pronunciation VARCHAR(255),
+                    origin VARCHAR(255),
+                    example0 TEXT,
+                    example0_latin TEXT,
+                    example1 TEXT,
+                    example1_latin TEXT,
+                    example2 TEXT,
+                    example2_latin TEXT,
+                    synonyms TEXT[],
+                    antonyms TEXT[],
+                    image VARCHAR(255)
+                    );`,
             );
             console.log(
                 'Connected to db and created table todo_items if it did not exist',
@@ -56,18 +75,31 @@ async function init() {
 
 // Get all items from the table
 async function getItems() {
-    return client
-        .query('SELECT * FROM todo_items')
-        .then((res) => {
-            return res.rows.map((row) => ({
-                id: row.id,
-                name: row.name,
-                completed: row.completed,
-            }));
-        })
-        .catch((err) => {
-            console.error('Unable to get items:', err);
-        });
+    async function getItems() {
+        return client
+            .query('SELECT * FROM word_of_the_day')
+            .then((res) => {
+                return res.rows.map((row) => ({
+                    id: row.id,
+                    word: row.word,
+                    definition: row.definition,
+                    pronunciation: row.pronunciation,
+                    origin: row.origin,
+                    example0: row.example0,
+                    example0Latin: row.example0_latin,
+                    example1: row.example1,
+                    example1Latin: row.example1_latin,
+                    example2: row.example2,
+                    example2Latin: row.example2_latin,
+                    synonyms: row.synonyms,
+                    antonyms: row.antonyms,
+                    image: row.image,
+                }));
+            })
+            .catch((err) => {
+                console.error('Unable to get items:', err);
+            });
+    }
 }
 
 // End the connection
