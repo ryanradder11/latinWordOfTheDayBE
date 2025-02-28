@@ -7,6 +7,7 @@ const getItems = require('./routes/getItems');
 const addItem = require('./routes/addItem');
 const updateItem = require('./routes/updateItem');
 const deleteItem = require('./routes/deleteItem');
+const getItem = require("./routes/getItem");
 
 const port = process.env.PORT || 3000;
 
@@ -20,6 +21,7 @@ app.use('/', express.static(path.join(__dirname, 'static')));
 app.get('/items', getItems);
 app.post('/items', addItem);
 app.put('/items/:id', updateItem);
+app.get('/items/:id', getItem);
 app.delete('/items/:id', deleteItem);
 
 db.init()

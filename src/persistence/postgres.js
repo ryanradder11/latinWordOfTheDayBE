@@ -75,31 +75,14 @@ async function init() {
 
 // Get all items from the table
 async function getItems() {
-    async function getItems() {
         return client
             .query('SELECT * FROM word_of_the_day')
             .then((res) => {
-                return res.rows.map((row) => ({
-                    id: row.id,
-                    word: row.word,
-                    definition: row.definition,
-                    pronunciation: row.pronunciation,
-                    origin: row.origin,
-                    example0: row.example0,
-                    example0Latin: row.example0_latin,
-                    example1: row.example1,
-                    example1Latin: row.example1_latin,
-                    example2: row.example2,
-                    example2Latin: row.example2_latin,
-                    synonyms: row.synonyms,
-                    antonyms: row.antonyms,
-                    image: row.image,
-                }));
+                return res.rows
             })
             .catch((err) => {
                 console.error('Unable to get items:', err);
             });
-    }
 }
 
 // End the connection
@@ -116,13 +99,14 @@ async function teardown() {
 
 // Get one item by id from the table
 async function getItem(id) {
+    console.log('id:', id);
     return client
-        .query('SELECT * FROM todo_items WHERE id = $1', [id])
+        .query('SELECT * FROM word_of_the_day WHERE id = $1', [id])
         .then((res) => {
-            return res.rows.length > 0 ? res.rows[0] : null;
+            return res.rows
         })
         .catch((err) => {
-            console.error('Unable to get item:', err);
+            console.error('Unable to get item:', err.message);
         });
 }
 
@@ -130,8 +114,15 @@ async function getItem(id) {
 async function storeItem(item) {
     return client
         .query(
-            'INSERT INTO todo_items(id, name, completed) VALUES($1, $2, $3)',
-            [item.id, item.name, item.completed],
+            `INSERT INTO word_of_the_day(
+                word, definition, pronunciation, origin, example0, example0_latin, 
+                example1, example1_latin, example2, example2_latin, synonyms, antonyms, image
+            ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+            [
+                item.word, item.definition, item.pronunciation, item.origin,
+                item.example0, item.example0Latin, item.example1, item.example1Latin,
+                item.example2, item.example2Latin, item.synonyms, item.antonyms, item.image
+            ]
         )
         .then(() => {
             console.log('Stored item:', item);
@@ -139,14 +130,20 @@ async function storeItem(item) {
         .catch((err) => {
             console.error('Unable to store item:', err);
         });
-}
-
-// Update one item by id in the table
+}// Update one item by id in the table
 async function updateItem(id, item) {
     return client
         .query(
-            'UPDATE todo_items SET name = $1, completed = $2 WHERE id = $3',
-            [item.name, item.completed, id],
+            `UPDATE word_of_the_day SET 
+                word = $1, definition = $2, pronunciation = $3, origin = $4, 
+                example0 = $5, example0_latin = $6, example1 = $7, example1_latin = $8, 
+                example2 = $9, example2_latin = $10, synonyms = $11, antonyms = $12, image = $13 
+            WHERE id = $14`,
+            [
+                item.word, item.definition, item.pronunciation, item.origin,
+                item.example0, item.example0Latin, item.example1, item.example1Latin,
+                item.example2, item.example2Latin, item.synonyms, item.antonyms, item.image, id
+            ]
         )
         .then(() => {
             console.log('Updated item:', item);
@@ -159,7 +156,7 @@ async function updateItem(id, item) {
 // Remove one item by id from the table
 async function removeItem(id) {
     return client
-        .query('DELETE FROM todo_items WHERE id = $1', [id])
+        .query('DELETE FROM word_of_the_day WHERE id = $1', [id])
         .then(() => {
             console.log('Removed item:', id);
         })
