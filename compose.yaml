@@ -39,7 +39,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    command: bash -c "rm -rf /var/lib/postgresql/data/* && docker-entrypoint.sh postgres"
+#    command: bash -c "rm -rf /var/lib/postgresql/data/* && docker-entrypoint.sh postgres"
 volumes:
   db-data:
 secrets:
