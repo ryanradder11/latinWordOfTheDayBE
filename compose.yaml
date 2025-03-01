@@ -20,6 +20,7 @@ services:
       - 80:80
     volumes:
       - ./src/static:/usr/local/apache2/htdocs/
+      - ./src/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
 
   db:
     image: postgres
