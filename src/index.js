@@ -5,6 +5,7 @@ const app = express();
 const db = require('./persistence');
 const getItems = require('./routes/getItems');
 const addItem = require('./routes/addItem');
+const addItems  = require('./routes/addItems');
 const updateItem = require('./routes/updateItem');
 const deleteItem = require('./routes/deleteItem');
 const getItem = require("./routes/getItem");
@@ -20,6 +21,7 @@ app.use('/', express.static(path.join(__dirname, 'static')));
 
 app.get('/items', getItems);
 app.post('/items', addItem);
+app.post('/items/batch', addItems);
 app.put('/items/:id', updateItem);
 app.get('/items/:id', getItem);
 app.delete('/items/:id', deleteItem);
