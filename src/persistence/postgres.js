@@ -78,7 +78,12 @@ async function getItems() {
         return client
             .query('SELECT * FROM word_of_the_day')
             .then((res) => {
-                return res.rows
+                const items = res.rows;
+                if (items.length === 0) {
+                    return null;
+                }
+                const randomIndex = Math.floor(Math.random() * items.length);
+                return [items[randomIndex]];
             })
             .catch((err) => {
                 console.error('Unable to get items:', err);
