@@ -15,8 +15,6 @@ RewriteRule .* - [F,L]
 RewriteCond %{REQUEST_URI} ^/.*wp-admin/.*$ [NC]
 RewriteRule .* - [F,L]
 
-# Block requests to sensitive files
-
 RewriteRule ^test\.html$ /index.html [L]
 RewriteRule ^index\.html$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
