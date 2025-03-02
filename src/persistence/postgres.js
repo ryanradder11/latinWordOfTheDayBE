@@ -90,20 +90,26 @@ async function getItems() {
 }
 
 async function getRandomItem() {
-        return client
-            .query('SELECT * FROM word_of_the_day')
-            .then((res) => {
-                const items = res.rows;
-                if (items.length === 0) {
-                    return null;
-                }
-                const randomIndex = Math.floor(Math.random() * items.length);
-                console.log('randomIndex:', randomIndex);
-                return [items[randomIndex]];
-            })
-            .catch((err) => {
-                console.error('Unable to get items:', err);
-            });
+
+    return client
+        .query('SELECT id FROM word_of_the_day ORDER BY RANDOM() LIMIT 1')
+        .then((res) => {
+            if (res.rows.length === 0) {
+                throw new Error('No items found');
+            }
+            const randomId = res.rows[0].id;
+            console.log('randomId:', randomId);
+            return client.query('SELECT * FROM word_of_the_day WHERE id = $1', [randomId]);
+        })
+        .then((res) => {
+            if (res.rows.length === 0) {
+                throw new Error('Item not found');
+            }
+            return res.rows[0];
+        })
+        .catch((err) => {
+            console.error('Unable to get item:', err);
+        })
 }
 
 async function getItemByDay(x) {
