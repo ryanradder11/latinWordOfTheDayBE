@@ -4,6 +4,8 @@ const path = require('path');
 const app = express();
 const db = require('./persistence');
 const getItems = require('./routes/getItems');
+const getItemDaily = require('./routes/getDailyItem');
+const getItemRandom = require('./routes/getRandomItem');
 const addItem = require('./routes/addItem');
 const addItems  = require('./routes/addItems');
 const updateItem = require('./routes/updateItem');
@@ -20,10 +22,12 @@ app.use('/', express.static(path.join(__dirname, 'static')));
 
 
 app.get('/items', getItems);
+app.get('/items/daily', getItemDaily);
+app.get('/items/random', getItemRandom);
+app.get('/items/:id', getItem);
 app.post('/items', addItem);
 app.post('/items/batch', addItems);
 app.put('/items/:id', updateItem);
-app.get('/items/:id', getItem);
 app.delete('/items/:id', deleteItem);
 
 db.init()

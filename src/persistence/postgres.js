@@ -75,6 +75,21 @@ async function init() {
 
 // Get all items from the table
 async function getItems() {
+    return client
+        .query('SELECT * FROM word_of_the_day')
+        .then((res) => {
+            const items = res.rows;
+            if (items.length === 0) {
+                return null;
+            }
+            return items;
+        })
+        .catch((err) => {
+            console.error('Unable to get items:', err);
+        });
+}
+
+async function getRandomItem() {
         return client
             .query('SELECT * FROM word_of_the_day')
             .then((res) => {
@@ -88,6 +103,22 @@ async function getItems() {
             .catch((err) => {
                 console.error('Unable to get items:', err);
             });
+}
+
+async function getItemByDay(x) {
+    const currentDay = new Date().getDate();
+    const index = (currentDay % x) + 1;
+
+    return db.getItem(index)
+        .then((item) => {
+            if (!item) {
+                throw new Error('Item not found');
+            }
+            return item;
+        })
+        .catch((err) => {
+            console.error('Unable to get item:', err);
+        });
 }
 
 // End the connection
