@@ -98,6 +98,7 @@ async function getRandomItem() {
                     return null;
                 }
                 const randomIndex = Math.floor(Math.random() * items.length);
+                console.log('randomIndex:', randomIndex);
                 return [items[randomIndex]];
             })
             .catch((err) => {
@@ -107,9 +108,11 @@ async function getRandomItem() {
 
 async function getItemByDay(x) {
     const currentDay = new Date().getDate();
+    console.log('currentDay:', currentDay);
     const index = (currentDay % x) + 1;
+    console.log('index:', index);
 
-    return db.getItem(index)
+    return getItem(index)
         .then((item) => {
             if (!item) {
                 throw new Error('Item not found');
@@ -209,4 +212,6 @@ module.exports = {
     storeItem,
     updateItem,
     removeItem,
+    getItemByDay,
+    getRandomItem,
 };
