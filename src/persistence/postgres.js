@@ -105,7 +105,7 @@ async function getRandomItem() {
             if (res.rows.length === 0) {
                 throw new Error('Item not found');
             }
-            return res.rows[0];
+            return [res.rows[0]];
         })
         .catch((err) => {
             console.error('Unable to get item:', err);
