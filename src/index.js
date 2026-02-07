@@ -10,6 +10,7 @@ const addItems  = require('./routes/addItems');
 const updateItem = require('./routes/updateItem');
 const deleteItem = require('./routes/deleteItem');
 const getItem = require("./routes/getItem");
+const getItemByWord = require("./routes/getItemByWord");
 
 const port = process.env.PORT || 3000;
 
@@ -20,27 +21,32 @@ app.use(cors());
 app.get('/items', getItems);
 app.get('/items/daily', getItemDaily);
 app.get('/items/random', getItemRandom);
+app.get('/items/:id/:word', getItemByWord);
 app.get('/items/:id', getItem);
 app.post('/items', addItem);
 app.post('/items/batch', addItems);
 app.put('/items/:id', updateItem);
 app.delete('/items/:id', deleteItem);
 
-db.init()
-    .then(() => {
-        app.listen(port, () => console.log('Listening on port:' + port));
-    })
-    .catch((err) => {
-        console.error(err);
-        process.exit(1);
-    });
+module.exports = app;
 
-const gracefulShutdown = () => {
-    db.teardown()
-        .catch(() => {})
-        .then(() => process.exit());
-};
+if (require.main === module) {
+    db.init()
+        .then(() => {
+            app.listen(port, () => console.log('Listening on port:' + port));
+        })
+        .catch((err) => {
+            console.error(err);
+            process.exit(1);
+        });
 
-process.on('SIGINT', gracefulShutdown);
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGUSR2', gracefulShutdown); // Sent by nodemon
+    const gracefulShutdown = () => {
+        db.teardown()
+            .catch(() => {})
+            .then(() => process.exit());
+    };
+
+    process.on('SIGINT', gracefulShutdown);
+    process.on('SIGTERM', gracefulShutdown);
+    process.on('SIGUSR2', gracefulShutdown); // Sent by nodemon
+}
