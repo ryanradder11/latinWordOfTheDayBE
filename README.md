@@ -92,6 +92,24 @@ docker compose up -d --build
 
 The frontend build context is configured via `FE_BUILD_CONTEXT` in `.env` (defaults to `../latinWordOfTheDay/latinWordOfTheDay`).
 
+### Generating new words
+
+New words and images are generated using the [latin-word-generator](https://github.com/ryanradder11/latin-word-generator) script.
+
+```bash
+# 1. Start the local backend
+npm run dev
+
+# 2. Generate words locally (in the generator repo)
+cd ../generate-words
+python generate_words.py generate --count 10
+
+# 3. Deploy to production
+python generate_words.py deploy
+```
+
+The `deploy` command temporarily exposes port 3000 on the server (via `compose.generate.yaml`), copies images, uploads new words, then closes the port. See the [generator README](https://github.com/ryanradder11/latin-word-generator#readme) for full details.
+
 ### Production URL
 
 https://latinwordoftheday.com
