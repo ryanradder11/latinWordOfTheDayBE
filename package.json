@@ -6,7 +6,7 @@
   "scripts": {
     "prettify": "prettier -l --write \"**/*.js\"",
     "test": "jest",
-    "dev": "nodemon --inspect=0.0.0.0:9229 -L src/index.js"
+    "dev": "docker compose up db -d && POSTGRES_HOST=localhost POSTGRES_USER=postgres POSTGRES_PASSWORD=$(cat db/password.txt) POSTGRES_DB=words nodemon --inspect=0.0.0.0:9229 -L src/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
