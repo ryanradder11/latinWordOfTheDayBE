@@ -87,7 +87,7 @@ docker compose up -d --build
 | Service | Image | Ports |
 |---|---|---|
 | `db` | `postgres:16` | 5432 |
-| `server` | Built from this repo | 3000 (internal) |
+| `server` | Built from this repo | 3000 |
 | `web` | Built from UI repo (Apache httpd 2.4) | 80, 443 |
 
 The frontend build context is configured via `FE_BUILD_CONTEXT` in `.env` (defaults to `../latinWordOfTheDay/latinWordOfTheDay`).
@@ -108,7 +108,7 @@ python generate_words.py generate --count 10
 python generate_words.py deploy
 ```
 
-The `deploy` command temporarily exposes port 3000 on the server (via `compose.generate.yaml`), copies images, uploads new words, then closes the port. See the [generator README](https://github.com/ryanradder11/latin-word-generator#readme) for full details.
+The `deploy` command copies images to the server via SCP and uploads new words to the production API (port 3000). See the [generator README](https://github.com/ryanradder11/latin-word-generator#readme) for full details.
 
 ### Production URL
 
