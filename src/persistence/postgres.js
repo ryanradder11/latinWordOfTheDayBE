@@ -16,6 +16,9 @@ const {
 
 let client;
 
+const recentRandomIds = [];
+const RECENT_RANDOM_LIMIT = 20;
+
 async function init() {
     const host = HOST_FILE ? fs.readFileSync(HOST_FILE) : HOST;
     console.log('host:', host);
@@ -70,15 +73,30 @@ async function getItems() {
 }
 
 async function getRandomItem() {
+    let query = "SELECT id FROM word_of_the_day WHERE LOWER(word) != 'automaton'";
+    const params = [];
+
+    if (recentRandomIds.length > 0) {
+        query += " AND id != ALL($1)";
+        params.push(recentRandomIds);
+    }
+
+    query += " ORDER BY RANDOM() LIMIT 1";
 
     return client
-        .query("SELECT id FROM word_of_the_day WHERE LOWER(word) != 'automaton' ORDER BY RANDOM() LIMIT 1")
+        .query(query, params)
         .then((res) => {
             if (res.rows.length === 0) {
                 throw new Error('No items found');
             }
             const randomId = res.rows[0].id;
             console.log('randomId:', randomId);
+
+            recentRandomIds.push(randomId);
+            if (recentRandomIds.length > RECENT_RANDOM_LIMIT) {
+                recentRandomIds.shift();
+            }
+
             return client.query('SELECT * FROM word_of_the_day WHERE id = $1', [randomId]);
         })
         .then((res) => {
