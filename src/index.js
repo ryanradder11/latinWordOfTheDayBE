@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const app = express();
 const db = require('./persistence');
 const getItems = require('./routes/getItems');
@@ -15,10 +14,7 @@ const getItem = require("./routes/getItem");
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static(__dirname + '/static'));
 app.use(cors());
-
-app.use('/', express.static(path.join(__dirname, 'static')));
 
 
 app.get('/items', getItems);
