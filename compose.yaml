@@ -6,8 +6,10 @@ services:
       NODE_ENV: production
       POSTGRES_HOST: db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: /run/secrets/db-password
+      POSTGRES_PASSWORD_FILE: /run/secrets/db-password
       POSTGRES_DB: words
+    secrets:
+      - db-password
     ports:
       - 3000:3000
     depends_on:
@@ -18,12 +20,16 @@ services:
     image: httpd:2.4
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ./src/static:/usr/local/apache2/htdocs/
-      - ./src/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./src/apache/httpd-ssl.conf:/usr/local/apache2/conf/httpd.conf
+      - /etc/letsencrypt/live/latinwordoftheday.com/fullchain.pem:/usr/local/apache2/conf/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/latinwordoftheday.com/privkey.pem:/usr/local/apache2/conf/ssl/privkey.pem:ro
+      - /etc/letsencrypt/archive/latinwordoftheday.com:/etc/letsencrypt/archive/latinwordoftheday.com:ro
 
   db:
-    image: postgres
+    image: postgres:16
     restart: always
     user: postgres
     secrets:
@@ -32,7 +38,7 @@ services:
       - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=words
-      - POSTGRES_PASSWORD=/run/secrets/db-password
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     ports:
       - 5432:5432
     healthcheck:
@@ -40,9 +46,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-#    command: bash -c "rm -rf /var/lib/postgresql/data/* && docker-entrypoint.sh postgres"
+
 volumes:
   db-data:
+
 secrets:
   db-password:
     file: db/password.txt
