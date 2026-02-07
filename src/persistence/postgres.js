@@ -72,7 +72,7 @@ async function getItems() {
 async function getRandomItem() {
 
     return client
-        .query('SELECT id FROM word_of_the_day ORDER BY RANDOM() LIMIT 1')
+        .query("SELECT id FROM word_of_the_day WHERE LOWER(word) != 'automaton' ORDER BY RANDOM() LIMIT 1")
         .then((res) => {
             if (res.rows.length === 0) {
                 throw new Error('No items found');
@@ -190,11 +190,24 @@ async function removeItem(id) {
         });
 }
 
+// Get one item by word name from the table
+async function getItemByWordName(word) {
+    return client
+        .query('SELECT * FROM word_of_the_day WHERE LOWER(word) = LOWER($1)', [word])
+        .then((res) => {
+            return res.rows;
+        })
+        .catch((err) => {
+            console.error('Unable to get item by word name:', err.message);
+        });
+}
+
 module.exports = {
     init,
     teardown,
     getItems,
     getItem,
+    getItemByWordName,
     storeItem,
     updateItem,
     removeItem,

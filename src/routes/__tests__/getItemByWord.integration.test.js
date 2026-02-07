@@ -2,6 +2,7 @@ jest.mock('../../persistence', () => ({
     init: jest.fn().mockResolvedValue(),
     teardown: jest.fn().mockResolvedValue(),
     getItem: jest.fn(),
+    getItemByWordName: jest.fn(),
     getItems: jest.fn(),
     getItemByDay: jest.fn(),
     getRandomItem: jest.fn(),
@@ -13,6 +14,8 @@ jest.mock('../../persistence', () => ({
 const request = require('supertest');
 const app = require('../../index');
 const db = require('../../persistence');
+
+const automatonRow = [{ id: 999, word: 'Automaton', definition: 'A soulless machine...' }];
 
 describe('GET /items/:id/:word (integration)', () => {
     afterEach(() => jest.clearAllMocks());
@@ -37,23 +40,25 @@ describe('GET /items/:id/:word (integration)', () => {
         expect(res.body).toEqual(rows);
     });
 
-    it('returns 404 when word does not match', async () => {
+    it('returns Automaton when word does not match', async () => {
         const rows = [{ id: 42, word: 'Glacies', definition: 'Ice' }];
         db.getItem.mockResolvedValue(rows);
+        db.getItemByWordName.mockResolvedValue(automatonRow);
 
         const res = await request(app).get('/items/42/Ignis');
 
-        expect(res.status).toBe(404);
-        expect(res.body.error).toBe('Word does not match');
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(automatonRow);
     });
 
-    it('returns 404 when id does not exist', async () => {
+    it('returns Automaton when id does not exist', async () => {
         db.getItem.mockResolvedValue([]);
+        db.getItemByWordName.mockResolvedValue(automatonRow);
 
         const res = await request(app).get('/items/999/Glacies');
 
-        expect(res.status).toBe(404);
-        expect(res.body.error).toBe('Item not found');
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(automatonRow);
     });
 
     it('still serves GET /items/:id without word', async () => {
@@ -64,5 +69,14 @@ describe('GET /items/:id/:word (integration)', () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual(rows);
+    });
+
+    it('falls back to 404 when Automaton is also missing', async () => {
+        db.getItem.mockResolvedValue([]);
+        db.getItemByWordName.mockResolvedValue([]);
+
+        const res = await request(app).get('/items/999/Glacies');
+
+        expect(res.status).toBe(404);
     });
 });
