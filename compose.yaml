@@ -10,23 +10,25 @@ services:
       POSTGRES_DB: words
     secrets:
       - db-password
-    ports:
-      - 3000:3000
+    expose:
+      - "3000"
     depends_on:
       db:
         condition: service_healthy
 
-  apache:
-    image: httpd:2.4
+  web:
+    build:
+      context: ${FE_BUILD_CONTEXT:-../latinWordOfTheDay/latinWordOfTheDay}
     ports:
       - 80:80
       - 443:443
     volumes:
-      - ./src/static:/usr/local/apache2/htdocs/
-      - ./src/apache/httpd-ssl.conf:/usr/local/apache2/conf/httpd.conf
+      - ./src/static/img:/usr/local/apache2/htdocs/img:ro
       - /etc/letsencrypt/live/latinwordoftheday.com/fullchain.pem:/usr/local/apache2/conf/ssl/fullchain.pem:ro
       - /etc/letsencrypt/live/latinwordoftheday.com/privkey.pem:/usr/local/apache2/conf/ssl/privkey.pem:ro
       - /etc/letsencrypt/archive/latinwordoftheday.com:/etc/letsencrypt/archive/latinwordoftheday.com:ro
+    depends_on:
+      - server
 
   db:
     image: postgres:16
