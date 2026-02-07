@@ -1,6 +1,7 @@
 const waitPort = require('wait-port');
 const fs = require('fs');
 const { Client } = require('pg');
+const { runMigrations } = require('../migrations/migrate');
 
 const {
     POSTGRES_HOST: HOST,
@@ -45,28 +46,7 @@ async function init() {
         .connect()
         .then(async () => {
             console.log(`Connected to postgres db at host ${HOST}`);
-            // Run the SQL instruction to create the table if it does not exist
-            await client.query(
-                `CREATE TABLE IF NOT EXISTS word_of_the_day (
-                    id SERIAL PRIMARY KEY,
-                    word VARCHAR(255) NOT NULL,
-                    definition TEXT NOT NULL,
-                    pronunciation VARCHAR(255),
-                    origin VARCHAR(255),
-                    example0 TEXT,
-                    example0_latin TEXT,
-                    example1 TEXT,
-                    example1_latin TEXT,
-                    example2 TEXT,
-                    example2_latin TEXT,
-                    synonyms TEXT[],
-                    antonyms TEXT[],
-                    image VARCHAR(255)
-                    );`,
-            );
-            console.log(
-                'Connected to db and created table todo_items if it did not exist',
-            );
+            await runMigrations(client);
         })
         .catch((err) => {
             console.error('Unable to connect to the database:', err);
