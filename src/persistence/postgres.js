@@ -110,18 +110,26 @@ async function getRandomItem() {
         })
 }
 
-async function getItemByDay(x) {
+async function getItemByDay() {
     const currentDay = new Date().getDate();
     console.log('currentDay:', currentDay);
-    const index = (currentDay % x) + 1;
-    console.log('index:', index);
 
-    return getItem(index)
-        .then((item) => {
-            if (!item) {
+    return client
+        .query("SELECT COUNT(*) FROM word_of_the_day WHERE LOWER(word) != 'automaton'")
+        .then((res) => {
+            const totalWords = parseInt(res.rows[0].count, 10);
+            const offset = currentDay % totalWords;
+            console.log('totalWords:', totalWords, 'offset:', offset);
+            return client.query(
+                "SELECT * FROM word_of_the_day WHERE LOWER(word) != 'automaton' ORDER BY id LIMIT 1 OFFSET $1",
+                [offset],
+            );
+        })
+        .then((res) => {
+            if (res.rows.length === 0) {
                 throw new Error('Item not found');
             }
-            return item;
+            return res.rows;
         })
         .catch((err) => {
             console.error('Unable to get item:', err);
