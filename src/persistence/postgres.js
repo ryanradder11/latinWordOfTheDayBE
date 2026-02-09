@@ -17,7 +17,7 @@ const {
 let client;
 
 const recentRandomIds = [];
-const RECENT_RANDOM_LIMIT = 20;
+const RECENT_RANDOM_LIMIT = 50;
 
 async function init() {
     const host = HOST_FILE ? fs.readFileSync(HOST_FILE) : HOST;
