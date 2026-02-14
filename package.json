@@ -6,11 +6,12 @@
   "scripts": {
     "prettify": "prettier -l --write \"**/*.js\"",
     "test": "jest",
-    "dev": "docker compose up db -d && POSTGRES_HOST=localhost POSTGRES_USER=postgres POSTGRES_PASSWORD=$(cat db/password.txt) POSTGRES_DB=words nodemon --inspect=0.0.0.0:9229 -L src/index.js"
+    "dev": "docker compose up db -d && POSTGRES_HOST=localhost POSTGRES_USER=postgres POSTGRES_PASSWORD=$(cat db/password.txt) POSTGRES_DB=words JWT_SECRET=dev-secret ADMIN_USERNAME=admin ADMIN_PASSWORD=admin ADMIN_API_KEY=dev-api-key nodemon --inspect=0.0.0.0:9229 -L src/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
     "path": "^0.12.7",
     "pg": "^8.11.2",
     "sqlite3": "^5.1.2",

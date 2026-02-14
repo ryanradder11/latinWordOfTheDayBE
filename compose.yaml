@@ -8,8 +8,15 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD_FILE: /run/secrets/db-password
       POSTGRES_DB: words
+      JWT_SECRET_FILE: /run/secrets/jwt-secret
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD_FILE: /run/secrets/admin-password
+      ADMIN_API_KEY_FILE: /run/secrets/admin-api-key
     secrets:
       - db-password
+      - jwt-secret
+      - admin-password
+      - admin-api-key
     ports:
       - "3000:3000"
     depends_on:
@@ -55,3 +62,9 @@ volumes:
 secrets:
   db-password:
     file: db/password.txt
+  jwt-secret:
+    file: db/jwt-secret.txt
+  admin-password:
+    file: db/admin-password.txt
+  admin-api-key:
+    file: db/admin-api-key.txt

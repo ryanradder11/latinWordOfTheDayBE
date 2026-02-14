@@ -2,8 +2,19 @@ const db = require('../persistence');
 
 module.exports = async (req, res) => {
     await db.updateItem(req.params.id, {
-        name: req.body.name,
-        completed: req.body.completed,
+        word: req.body.word,
+        definition: req.body.definition,
+        pronunciation: req.body.pronunciation,
+        origin: req.body.origin,
+        example0: req.body.example0,
+        example0Latin: req.body.example0Latin,
+        example1: req.body.example1,
+        example1Latin: req.body.example1Latin,
+        example2: req.body.example2,
+        example2Latin: req.body.example2Latin,
+        synonyms: req.body.synonyms,
+        antonyms: req.body.antonyms,
+        image: req.body.image,
     });
     const item = await db.getItem(req.params.id);
     res.send(item);
