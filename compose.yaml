@@ -23,23 +23,19 @@ services:
         condition: service_healthy
     restart: unless-stopped
     mem_limit: 256m
-    networks:
-      - default
-      - web-proxy
 
   web:
     build:
       context: ${FE_BUILD_CONTEXT:-../latinWordOfTheDay/latinWordOfTheDay}
     container_name: latin-web
+    ports:
+      - "127.0.0.1:8080:80"
     volumes:
       - ./src/static/img:/usr/local/apache2/htdocs/img:ro
     depends_on:
       - server
     restart: unless-stopped
     mem_limit: 64m
-    networks:
-      - default
-      - web-proxy
 
   db:
     image: postgres:16
@@ -58,8 +54,6 @@ services:
       timeout: 5s
       retries: 5
     mem_limit: 256m
-    networks:
-      - default
 
 volumes:
   db-data:
@@ -73,7 +67,3 @@ secrets:
     file: db/admin-password.txt
   admin-api-key:
     file: db/admin-api-key.txt
-
-networks:
-  web-proxy:
-    external: true
