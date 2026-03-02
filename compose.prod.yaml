@@ -61,10 +61,10 @@ volumes:
 
 secrets:
   db-password:
-    file: /root/latin-secrets/password.txt
+    file: db/password.txt
   jwt-secret:
-    file: /root/latin-secrets/jwt-secret.txt
+    file: db/jwt-secret.txt
   admin-password:
-    file: /root/latin-secrets/admin-password.txt
+    file: db/admin-password.txt
   admin-api-key:
-    file: /root/latin-secrets/admin-api-key.txt
+    file: db/admin-api-key.txt

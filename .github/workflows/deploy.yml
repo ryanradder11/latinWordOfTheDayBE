@@ -60,7 +60,7 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
         with:
-          host: 217.154.66.24
+          host: 217.154.167.167
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: GHCR_TOKEN
