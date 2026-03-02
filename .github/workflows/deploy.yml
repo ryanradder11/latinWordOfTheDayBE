@@ -67,15 +67,9 @@ jobs:
           script: |
             echo "$GHCR_TOKEN" | docker login ghcr.io -u ryanradder11 --password-stdin
             cd /root/latinWordOfTheDayBE
-            pwd
             git pull origin main
-            echo "=== secrets files ==="
-            ls -la db/
-            echo "=== stopping old containers ==="
             docker compose -f compose.prod.yaml down || docker compose down || true
-            echo "=== pulling new images ==="
             docker compose -f compose.prod.yaml pull server web
-            echo "=== starting containers ==="
             docker compose -f compose.prod.yaml up -d
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
