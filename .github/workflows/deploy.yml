@@ -68,6 +68,7 @@ jobs:
             echo "$GHCR_TOKEN" | docker login ghcr.io -u ryanradder11 --password-stdin
             cd /root/latinWordOfTheDayBE
             git pull origin main
+            docker compose down
             docker compose -f compose.prod.yaml pull server web
             docker compose -f compose.prod.yaml up -d
         env:
